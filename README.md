@@ -1,61 +1,483 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center"><strong>Advanced Web Project: Student Management</strong>  </h1>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<h2>Thông tin cá nhân</h2>
+
+👤 **Họ tên:** Nguyễn Duy Hiệu  
+🎓 **Mã sinh viên:** 23010363
+
+## 📝 Mô tả dự án
+
+Website quản lí sinh viên với các chức năng cơ bản
+Dự án sử dụng Laravel, MySQL, và tích hợp hệ thống gửi mail định kỳ.
+
+## 🧰 Công nghệ sử dụng
+
+-   PHP (Laravel Framework)
+-   Laravel Breeze
+-   MySQL (Aiven Cloud)
+-   Blade Template
+-   Tailwind CSS (do Breeze tích hợp sẵn)
+
+## 🚀 Cài đặt & Chạy thử
+
+```bash
+git https://github.com/NguyenDuyHieu49/AdvancedWeb/tree/master
+cd ./quan-ly-sinh-vien
+composer install
+npm i
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+```
+
+<p>
+Hãy tạo 1 server SQL trên Aiven để có thể dùng trong dự án hoặc tự tạo 1 server với xampp hoặc docker trên máy tính cá nhân của bạn  
 </p>
+<strong>
+Sau dó chạy 3 câu lệnh ở 3 terminal khác nhau
+</strong>
 
-## About Laravel
+```bash
+php artisan serve
+npm run dev
+```
+# Sơ đồ khối
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+# Một số Code chính minh họa
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Model
+<strong>Student Model</strong>
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```php
+class Student extends Model
+{
+    use HasFactory;
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    protected $fillable = ['name', 'email', 'birthday', 'avatar'];
 
-## Laravel Sponsors
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'enrollments');
+    }
+}
+```
+<strong>Course Model</strong>
+```php
+class Course extends Model
+{
+    use HasFactory;
 
-### Premium Partners
+    protected $fillable = ['name', 'description'];
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 
-## Contributing
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'enrollments');
+    }
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<strong>Course Model</strong>
+```php
+class Enrollment extends Model
+{
+    use HasFactory;
 
-## Code of Conduct
+    protected $fillable = ['student_id', 'course_id'];
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 
-## Security Vulnerabilities
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+}
+```
+## Controller
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<strong>Course Controller</strong>
 
-## License
+```php
+class CourseController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Course $course)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Course $course)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Course $course)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Course $course)
+    {
+        //
+    }
+}
+```
+
+<strong>Student Controller</strong>
+```php
+class StudentController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {
+        $students = Student::all();
+        return view('students.index', compact('students'));
+    }
+
+    public function create()
+    {
+        return view('students.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:students',
+            'birthday' => 'nullable|date',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $path;
+        }
+        Student::create($validated);
+        return redirect()->route('students.index')->with('success', 'Thêm sinh viên thành công!');
+    }
+
+    public function show(Student $student)
+    {
+        return view('students.show', compact('student'));
+    }
+
+    public function edit(Student $student)
+    {
+        return view('students.edit', compact('student'));
+    }
+
+    public function update(Request $request, Student $student)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:students,email,'.$student->id,
+            'birthday' => 'nullable|date',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ]);
+        if ($request->hasFile('avatar')) {
+            // Xóa ảnh cũ nếu có
+            if ($student->avatar) {
+                Storage::disk('public')->delete($student->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $path;
+        }
+        $student->update($validated);
+        return redirect()->route('students.index')->with('success', 'Cập nhật sinh viên thành công!');
+    }
+
+    public function destroy(Student $student)
+    {
+        if ($student->avatar) {
+            Storage::disk('public')->delete($student->avatar);
+        }
+        $student->delete();
+        return \redirect()->route('students.index')->with('success', 'Xóa sinh viên thành công!');
+    }
+}
+
+```
+
+<strong>Enrollment Controller</strong>
+```php
+class EnrollmentController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Enrollment $enrollment)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Enrollment $enrollment)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Enrollment $enrollment)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Enrollment $enrollment)
+    {
+        //
+    }
+}
+```
+
+<strong>Profile Controller</strong>
+```php
+class ProfileController extends Controller
+{
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(Request $request): View
+    {
+        return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
+}
+```
+
+## View
+
+<strong>
+    Cấu trúc chính của view
+</strong>
+![Structure-view](./config/picture/views.png)
+
+<strong>
+    Sử dụng thư viện Tailwind CSS để viết các style trực tiếp trong class mà không cần viết CSS thuần
+</strong>
+
+![tailwind1](./config/picture/tailwindlib.png)
+# Security Setup
+
+<strong>
+    Sử dụng @csrf để chống tấn công CSRF
+    Ví dụ: file reminder/create.blade.php
+</strong>
+
+![csrf-example](./config/picture/csrf.png)
+
+<strong>
+    Chống tấn công XSS  
+    Ví dụ: file reminder/index.blade.php
+</strong>
+
+![XSS](./config/picture/xss.png)
+
+<strong>Trường hợp không xử dụng {{}} của laravel các dữ liệu của chúng ta sẽ không được bảo vệ  </strong>
+
+<strong>
+    Validation Ràng buộc dữ liệu giúp ngăn chặn các input độc hại<br>
+    Ví dụ method NoteController@store
+</strong>
+
+![Validation](./config/picture/validstudentcon.png)
+
+<strong>
+    Middleware bảo mật
+    Xử dụng các middleware auth, verified, throttle của laravel
+    Ví dụ: file routes/web.php
+</strong>
+
+![Middleware-1](./config/picture/middleware.png)  
+
+ Authentication
+    Ví dụ: Sử dụng Auth() để lấy thông tin user 1 cách an toàn
+    method:CategoryController@store
+</strong>
+
+![Authentication](./config/picture/authentication.png)
+
+<strong>
+    Luôn sử dụng phiên bản Laravel mới nhất để đảm bảo ứng dụng nhận được các bản vá bảo mật, cải tiến hiệu năng và các tính năng mới nhất từ cộng đồng phát triển
+</strong>
+
+![Library](./config/picture/version.png)
+
+
+
+# Link
+
+## Github link
+
+`https://github.com/NguyenDuyHieu49/AdvancedWeb/tree/master`
+
+## Github page
+
+`https://nguyenduyhieu49.github.io/AdvancedWeb/`
+
+## Youtube link
+
+
+
+## Public Web (deployment) link
+
+
+
+# Một số hình ảnh chức năng chính
+
+## Xác thực người dùng <\<Breeze>\>
+
+<strong>Trang đăng nhập</strong>
+
+![Register](./config/picture/login.png)
+
+<strong>Trang đăng ký</strong>
+
+![Register](./config/picture/register.png)
+
+## Trang chính
+
+![dashboard](./config/picture/dashboard2.png)
+
+<strong>Sau khi thêm sinh viên</strong>
+
+![aftercreate](./config/picture/dashboard3.png)
+
+## CRUD Student
+
+<strong>Create Student</strong>
+
+![create-student](./config/picture/create.png)
+
+<strong>Delete and update student</strong>
+
+![delete-note](./config/picture/delete.png)
+
+<strong>Trang update</strong>
+
+![update-note-page](./config/picture/update.png)
+
+# License & Copy Rights
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
