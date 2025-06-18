@@ -17,6 +17,7 @@ Dự án sử dụng Laravel, MySQL, và tích hợp hệ thống gửi mail đ�
 -   MySQL (Aiven Cloud)
 -   Blade Template
 -   Tailwind CSS (do Breeze tích hợp sẵn)
+-   Bootstrap
 
 ## 🚀 Cài đặt & Chạy thử
 
@@ -34,7 +35,7 @@ php artisan migrate
 Hãy tạo 1 server SQL trên Aiven để có thể dùng trong dự án hoặc tự tạo 1 server với xampp hoặc docker trên máy tính cá nhân của bạn  
 </p>
 <strong>
-Sau dó chạy 3 câu lệnh ở 3 terminal khác nhau
+Sau dó chạy 2 câu lệnh ở 2 terminal khác nhau
 </strong>
 
 ```bash
@@ -43,6 +44,19 @@ npm run dev
 ```
 # Sơ đồ khối
 
+![SQL diagram](./config/picture/ERD.png)
+
+## ⚙️Sơ đồ chức năng
+
+![UML](./config/picture/uml.png)
+
+## 🧠Sơ đồ thuật toán
+
+<strong>Dasboard</strong>  
+![Dashboard-diagram](./config/picture/dashboarddia.png)
+
+<strong>CRUD Student</strong>  
+![crud-student](./config/picture/cruddia.png)
 
 
 
@@ -87,6 +101,7 @@ class Course extends Model
         return $this->belongsToMany(Student::class, 'enrollments');
     }
 }
+
 ```
 
 <strong>Course Model</strong>
@@ -477,6 +492,14 @@ class ProfileController extends Controller
 <strong>Trang update</strong>
 
 ![update-note-page](./config/picture/update.png)
+
+## Điểm hạn chế
+- Không có chức năng phân quyền
+- Không có chức năng tìm kiếm
+- Không có chức năng phân loại
+- Không có chức năng phân tích dữ liệu
+- Mới chỉ có thực hiện chức năng với Student, chưa có chức năng với Course và Enrollment
+- Giao diện còn đơn giản
 
 # License & Copy Rights
 
