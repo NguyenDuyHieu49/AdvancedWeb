@@ -397,14 +397,14 @@ class ProfileController extends Controller
 
 <strong>
     Sử dụng @csrf để chống tấn công CSRF
-    Ví dụ: file reminder/create.blade.php
+    Ví dụ: file /create.blade.php
 </strong>
 
 ![csrf-example](./config/picture/csrf.png)
 
 <strong>
     Chống tấn công XSS  
-    Ví dụ: file reminder/index.blade.php
+    Ví dụ: file /index.blade.php
 </strong>
 
 ![XSS](./config/picture/xss.png)
@@ -413,7 +413,7 @@ class ProfileController extends Controller
 
 <strong>
     Validation Ràng buộc dữ liệu giúp ngăn chặn các input độc hại<br>
-    Ví dụ method NoteController@store
+    Ví dụ method StudentController
 </strong>
 
 ![Validation](./config/picture/validstudentcon.png)
@@ -428,7 +428,7 @@ class ProfileController extends Controller
 
  Authentication
     Ví dụ: Sử dụng Auth() để lấy thông tin user 1 cách an toàn
-    method:CategoryController@store
+    method:StudentController
 </strong>
 
 ![Authentication](./config/picture/authentication.png)
