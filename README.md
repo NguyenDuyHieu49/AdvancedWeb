@@ -409,7 +409,7 @@ class ProfileController extends Controller
 
 ![XSS](./config/picture/xss.png)
 
-<strong>Trường hợp không xử dụng {{}} của laravel các dữ liệu của chúng ta sẽ không được bảo vệ  </strong>
+<strong>Trường hợp không sử dụng {{}} của laravel các dữ liệu của chúng ta sẽ không được bảo vệ  </strong>
 
 <strong>
     Validation Ràng buộc dữ liệu giúp ngăn chặn các input độc hại<br>
