@@ -8,7 +8,7 @@
 ## 📝 Mô tả dự án
 
 Website quản lí sinh viên với các chức năng cơ bản
-Dự án sử dụng Laravel, MySQL, và tích hợp hệ thống gửi mail định kỳ.
+Dự án sử dụng Laravel, MySQL
 
 ## 🧰 Công nghệ sử dụng
 
